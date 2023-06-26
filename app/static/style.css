@@ -1,7 +1,7 @@
 body {
 	background-color: black;
-	font-family: Terminus, bold;
-	font-size: 20px;
+	font-family: Pixeled;
+	font-size: 15px;
 	color: white;
 	gap: 1rem;
 	padding: 2rem;
@@ -9,10 +9,9 @@ body {
 			
 input {
 	padding: 0.5rem;
-	border: 2px solid #333;
-	border-radius: 10px;
-	background-color: #f7f7f7;
-	color: black;
+	border: 3px solid #555;
+	background-color: black;
+	color: white;
 	font-size: 1rem;
 	transition: border-color 0.2s ease-in-out;
 }
@@ -21,3 +20,4 @@ input:focus {
 	border-color: #4facfe;
 	outline: none;
 }
+
