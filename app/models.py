@@ -40,4 +40,8 @@ class Database:
         )
 
         self.connection.commit()
-        
+    
+    def sign_in():
+       pass 
+
+
