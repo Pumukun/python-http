@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+		{% if title %}
+		<title>{{title}}</title>
+		{% else %}
+		<title>CSV-reader</title>
+		{% endif %}
+	</head>
+
+	<body>
+		<div>CSV: 
+			<a href="/index">Home</a>
+			<a href="/login">Log in</a>
+		</div>
+		<hr>
+
+		
+		{% with messages = get_flashed_messages() %}
+		{% if messages %}
+		<ul>
+		{% for message in messages %}
+        <li>{{ message }} </li>
+		{% endfor %}
+		</ul>
+		{% endif %}
+		{% endwith %}
+
+		{% block content %}{% endblock %}
+	</body>
+</html>
