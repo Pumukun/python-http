@@ -68,4 +68,9 @@ class Database:
         self.connection.commit()
 
 class User(UserMixin):
-    pass
+    id = 0 
+    username = ""
+
+    def get_username(self):
+        return self.username
+

@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, request
-from app import app
+from app import app, login_manager
 from app.forms import LoginForm, RegisterForm
 from app.models import Database, User
 from flask_login import current_user, login_user, logout_user, login_required
@@ -7,17 +7,14 @@ from werkzeug.urls import url_parse
 
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
-    user = { 'nickname': 'Nickname' }
-    
     return render_template("index.html",
-        title='Home', user=user)
+        title='Home')
 
 
 @login_manager.user_loader
-def load_user(user):
-    return User.query.get(int(user))
+def load_user(user_id):
+    return User.get_id(user_id)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -33,6 +30,7 @@ def login():
             flash('Login Incorrect')
         else:
             login_user(user, remember=form.remember_me.data)
+            flash('Logged in successfully.')
             next_page = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
                 next_page = 'index'
@@ -42,6 +40,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     redirect('index')
