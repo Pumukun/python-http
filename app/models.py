@@ -1,6 +1,7 @@
 import sqlite3
 import hashlib
 from flask_login import UserMixin, LoginManager
+from flask import flash
 
 conn = sqlite3.connect('/home/pumukun/GitHub/python-http/app.db')
 
@@ -52,8 +53,8 @@ class Database:
         )
 
         try:
-            tmp_user_ID = self.cursor.fetchone()[0]
-            return tmp_user_ID
+            tmp_user = self.cursor.fetchone()
+            return tmp_user
         except:
             return -1
 
@@ -67,6 +68,50 @@ class Database:
 
         self.connection.commit()
 
-class User(UserMixin):
-    id = 0 
+    def get_user(self, user_id):
+        try:
+            self.cursor.execute(
+                '''
+                    SELECT * 
+                    FROM Users
+                    WHERE User_ID = ?
+                    LIMIT 1
+                ''', (user_id)
+            )
+
+            result = self.cursor.fetchone()
+            if not result:
+                print("User not found")
+                return None
+
+            return result
+
+        except sqlite3.Error as err:
+            print("sqlite3 error: " + str(err))
+
+        return None
+
+class User():
+    def from_db(self, user_id, db):
+        self.__user = db.get_user(user_id)
+        return self
+
+    def create(self, user):
+        self.__user = user
+        return self
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        if self.__user != None:
+            return str(self.__user[0])
+        else:
+            flash("Login incorrect")
 

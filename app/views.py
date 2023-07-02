@@ -6,6 +6,9 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 
+users_db = Database()
+
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -15,24 +18,21 @@ def index():
 
 @login_manager.user_loader
 def load_user(user_id):
-    user = User()
-    user.id = user_id
-    return user
+    return User().from_db(user_id, users_db)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        users_db = Database()
-        user = User()
-        user.id = users_db.sign_in(form.username.data, form.password.data)
-        user.name = form.username.data
+        user = users_db.sign_in(form.username.data, form.password.data)
+        
+        user_login = User().create(user)
 
-        if user.id == -1:
+        if user == -1:
             flash('Login Incorrect')
         else:
-            login_user(user, remember=form.remember_me.data)
+            login_user(user_login, remember=form.remember_me.data)
             flash('Logged in successfully.')
             next_page = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
