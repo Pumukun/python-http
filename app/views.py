@@ -5,6 +5,7 @@ from app.models import Database, User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -14,7 +15,9 @@ def index():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get_id(user_id)
+    user = User()
+    user.id = user_id
+    return user
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -24,7 +27,7 @@ def login():
         users_db = Database()
         user = User()
         user.id = users_db.sign_in(form.username.data, form.password.data)
-        user.username = form.username.data
+        user.name = form.username.data
 
         if user.id == -1:
             flash('Login Incorrect')
@@ -43,7 +46,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    redirect('index')
+    return redirect('index')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

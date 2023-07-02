@@ -69,8 +69,4 @@ class Database:
 
 class User(UserMixin):
     id = 0 
-    username = ""
-
-    def get_username(self):
-        return self.username
 
