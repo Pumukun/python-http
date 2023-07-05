@@ -3,11 +3,11 @@ import hashlib
 from flask_login import UserMixin, LoginManager
 from flask import flash
 
-conn = sqlite3.connect('/home/pumukun/GitHub/python-http/app.db')
+conn = sqlite3.connect('/home/pumukun/github/python-http/app.db')
 
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect('/home/pumukun/GitHub/python-http/app.db', check_same_thread=False)
+        self.connection = sqlite3.connect('/home/pumukun/github/python-http/app.db', check_same_thread=False)
         self.cursor = self.connection.cursor()
 
         self.cursor.execute(
@@ -53,8 +53,8 @@ class Database:
         )
 
         try:
-            tmp_user = self.cursor.fetchone()
-            return tmp_user
+            tmp_user_ID = self.cursor.fetchone()[0]
+            return tmp_user_ID
         except:
             return -1
 
@@ -91,27 +91,6 @@ class Database:
 
         return None
 
-class User():
-    def from_db(self, user_id, db):
-        self.__user = db.get_user(user_id)
-        return self
-
-    def create(self, user):
-        self.__user = user
-        return self
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        if self.__user != None:
-            return str(self.__user[0])
-        else:
-            flash("Login incorrect")
-
+class User(UserMixin):
+    id = -1
+    

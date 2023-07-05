@@ -7,34 +7,33 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from app.csv_reader import CsvReader
 
-
 users_db = Database()
-
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template("index.html",
-        title='Home')
+    return render_template("index.html", title='Home')
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User().from_db(user_id, users_db)
+    user = User()
+    user.id = user_id
+    return user
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = users_db.sign_in(form.username.data, form.password.data)
-        
-        user_login = User().create(user)
+        user = User()
+        user.id = users_db.sign_in(form.username.data, form.password.data)
+        user.username = form.username.data
 
-        if user == -1:
+        if user.id == -1:
             flash('Login Incorrect')
         else:
-            login_user(user_login, remember=form.remember_me.data)
+            login_user(user, remember=form.remember_me.data)
             flash('Logged in successfully.')
             next_page = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
@@ -75,7 +74,19 @@ def csv_app():
         f = request.files['file']
         f.save(secure_filename(f.filename))
         csv_html_table = reader.csv_to_html(f.filename)
-        return render_template('csv_app.html', title='CSV App', table=csv_html_table)
+
+        with open('app/templates/csv_app_table.html', 'w', encoding='UTF-8') as file:
+            file.write(
+                '''
+                    {% extends "csv_app.html" %}
+                    {% block table %}
+                '''
+            )
+            file.write(f'{csv_html_table}')
+            file.write('{% endblock %}')
+                
+
+        return render_template('csv_app_table.html', title='CSV App')
     
     return render_template('csv_app.html', title='CSV App')
 

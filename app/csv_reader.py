@@ -7,7 +7,7 @@ class CsvReader:
     def csv_to_html(self, csv_path):
         self._csv_file = pd.read_csv(csv_path)
 
-        html_res = self._csv_file.to_html()
+        html_res = self._csv_file.to_html(index=False)
 
         return html_res
 
