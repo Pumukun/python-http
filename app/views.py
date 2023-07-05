@@ -4,6 +4,8 @@ from app.forms import LoginForm, RegisterForm
 from app.models import Database, User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+from werkzeug.utils import secure_filename
+from app.csv_reader import CsvReader
 
 
 users_db = Database()
@@ -63,3 +65,17 @@ def register():
             flash('User: "' + form.username.data + '" Already exists')
 
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/csv_app', methods=['GET', 'POST'])
+def csv_app():
+    reader = CsvReader()
+
+    if request.method == 'POST':
+        f = request.files['file']
+        f.save(secure_filename(f.filename))
+        csv_html_table = reader.csv_to_html(f.filename)
+        return render_template('csv_app.html', title='CSV App', table=csv_html_table)
+    
+    return render_template('csv_app.html', title='CSV App')
+
