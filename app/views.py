@@ -68,25 +68,24 @@ def register():
 
 @app.route('/csv_app', methods=['GET', 'POST'])
 def csv_app():
-    reader = CsvReader()
+    checkbox_sort = request.form.get('checkbox_sort')
 
     if request.method == 'POST':
-        f = request.files['file']
-        f.save(secure_filename(f.filename))
-        csv_html_table = reader.csv_to_html(f.filename)
+        files = []
 
-        with open('app/templates/csv_app_table.html', 'w', encoding='UTF-8') as file:
-            file.write(
-                '''
-                    {% extends "csv_app.html" %}
-                    {% block table %}
-                '''
-            )
-            file.write(f'{csv_html_table}')
-            file.write('{% endblock %}')
-                
+        for filename in request.files.getlist('file'):
+            f = filename
+            f.save(secure_filename(f.filename))
+            files.append(filename.filename)
+        
+        menu_item = request.form.get('select-menu')
 
-        return render_template('csv_app_table.html', title='CSV App')
+        if (menu_item != None):
+            reader = CsvReader(files[menu_item])     
+            csv_html_table = reader.csv_to_html()
+        else:
+            csv_html_table=''
+        return render_template('csv_app.html', title='CSV App', files=files, csv_html_table=csv_html_table)
     
     return render_template('csv_app.html', title='CSV App')
 

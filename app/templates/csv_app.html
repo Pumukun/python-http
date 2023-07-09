@@ -2,12 +2,30 @@
 {% block content %}
 
 <form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file">
+    <input type="file" name="file" multiple>
     <input type="submit" value="Upload">
+	<br>
+
+	{% if files|length > 0 %}
+	<select size="{{ files|length }}" name="select-menu" id="select-menu">
+		{% for file in files %}
+		<option value="{{ loop.index }}">{{ file }}</option>
+		{% endfor %}
+	</select>
+	<br>
+	{% endif %}
+
+	<button type"submit" name="reload_btn" value="reload">Reload</button>
 </form>
 
-<div class="table">
-	{% block table %}{% endblock %}
+<div class="input-table" style="display: inline">
+	<label>filter</label><br>
+	<input type="field"></input>
+</div>
+
+<div class="table" style="display: inline">
+{{ csv_html_table|safe }}
 </div>
 
 {% endblock %}
+
