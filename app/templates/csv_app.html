@@ -5,8 +5,12 @@
     <input type="file" name="file" multiple>
     <input type="submit" value="Upload">
 	<br>
+	
+	{% if files|length == 1%}
+	<label>File: {{ files[0] }}</label>
+	{% endif %}
 
-	{% if files|length > 0 %}
+	{% if files|length > 1 %}
 	<select size="{{ files|length }}" name="select-menu" id="select-menu">
 		{% for file in files %}
 		<option value="{{ loop.index }}">{{ file }}</option>
@@ -15,7 +19,7 @@
 	<br>
 	{% endif %}
 
-	<button type"submit" name="reload_btn" value="reload">Reload</button>
+	<button type="button" onclick="show_table()">Reload</button>
 </form>
 
 <div class="input-table" style="display: inline">

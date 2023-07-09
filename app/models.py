@@ -3,11 +3,13 @@ import hashlib
 from flask_login import UserMixin, LoginManager
 from flask import flash
 
-conn = sqlite3.connect('/home/pumukun/github/python-http/app.db')
+
+conn_path = '/home/pumukun/GitHub/python-http/app.db'
+conn = sqlite3.connect(conn_path)
 
 class Database:
     def __init__(self):
-        self.connection = sqlite3.connect('/home/pumukun/github/python-http/app.db', check_same_thread=False)
+        self.connection = sqlite3.connect(conn_path, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
         self.cursor.execute(

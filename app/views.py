@@ -80,11 +80,15 @@ def csv_app():
         
         menu_item = request.form.get('select-menu')
 
-        if (menu_item != None):
+        if menu_item != None and len(files) > 1 and request.form['reload_btn']:
             reader = CsvReader(files[menu_item])     
             csv_html_table = reader.csv_to_html()
+        elif len(files) == 1:
+            reader = CsvReader(files[0])
+            csv_html_table = reader.csv_to_html()
         else:
-            csv_html_table=''
+            csv_html_table = '<tb><tb>'
+
         return render_template('csv_app.html', title='CSV App', files=files, csv_html_table=csv_html_table)
     
     return render_template('csv_app.html', title='CSV App')
