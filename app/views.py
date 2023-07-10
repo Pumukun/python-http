@@ -6,6 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from app.csv_reader import CsvReader
+import os
 
 users_db = Database()
 
@@ -75,7 +76,7 @@ def csv_app():
 
         for filename in request.files.getlist('file'):
             f = filename
-            f.save(secure_filename(f.filename))
+            f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
             files.append(filename.filename)
         
         menu_item = request.form.get('select-menu')

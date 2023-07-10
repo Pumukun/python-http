@@ -3,7 +3,7 @@
 
 <form method="POST" enctype="multipart/form-data">
     <input type="file" name="file" multiple>
-    <input type="submit" value="Upload">
+    <input type="submit" value="Upload" class="button">
 	<br>
 	
 	{% if files|length == 1%}
@@ -19,7 +19,7 @@
 	<br>
 	{% endif %}
 
-	<button type="button" onclick="show_table()">Reload</button>
+	<button type="button" id="reload_btn">Reload</button>
 </form>
 
 <div class="input-table" style="display: inline">
@@ -31,5 +31,7 @@
 {{ csv_html_table|safe }}
 </div>
 
+<pre id="preview-text"></pre>
+<div class="preview"></div>
 {% endblock %}
 

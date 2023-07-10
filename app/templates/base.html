@@ -10,25 +10,25 @@
 		<title>{{title}}</title>
 		{% else %}
 		<title>CSV-reader</title>
-		{% endif %}
+		{% endif %}	
 	</head>
 
 	<body>
 		<div style="display: flex; justify-content: space-between">
 			<div>
-				<a href="/index">Home</a>
-				<a href=/csv_app>App</a>
+				<a href="/index" class="a_head">Home</a>
+				 <a href=/csv_app class="a_head">App</a>
 			</div>
 
 			{% if current_user.is_anonymous %}
 			<div>
-				<a href="/login">Sign in</a>
-				<a href="/register">Register</a>
+				<a href="/login" class="a_head">Sign in</a>
+				<a href="/register" class="a_head">Register</a>
 			</div>
 			{% else %}
 			<div>
 				<label>{{ current_user.name }}</label>
-				<a href="/logout">Log out</a>
+				<a href="/logout" class="a_head">Log out</a>
 			</div>
 			{% endif %}
 		</div>
@@ -47,5 +47,7 @@
 		</div>
 
 		{% block content %}{% endblock %}
+
+		<script src="static/scripts.js"></script>
 	</body>
 </html>
