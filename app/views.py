@@ -1,31 +1,33 @@
-from flask import render_template, flash, redirect, request
+from flask import render_template, flash, redirect, request, send_file
 from app import app, login_manager
 from app.forms import LoginForm, RegisterForm
 from app.models import Database, User
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from werkzeug.utils import secure_filename
 from app.csv_reader import CsvReader
 import os
+from typing import List
 
 users_db = Database()
 
+# main route
 @app.route('/')
 @app.route('/index')
-def index():
+def index() -> str:
     return render_template("index.html", title='Home')
 
 
+# login and registration
 @login_manager.user_loader
-def load_user(user_id):
+def load_user(user_id: int) -> User:
     user = User()
     user.id = user_id
     return user
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login() -> str:
     form = LoginForm()
-
+    
     if form.validate_on_submit():
         user = User()
         user.id = users_db.sign_in(form.username.data, form.password.data)
@@ -36,27 +38,26 @@ def login():
         else:
             login_user(user, remember=form.remember_me.data)
             flash('Logged in successfully.')
-            next_page = request.args.get('next')
+            next_page: str = request.args.get('next')
             if not next_page or url_parse(next_page).netloc != '':
                 next_page = 'index'
             return redirect(next_page)
 
     return render_template('login.html', title='Sign In', form=form)
 
-
 @app.route('/logout')
 @login_required
-def logout():
+def logout() -> str:
     logout_user()
     return redirect('index')
 
 @app.route('/register', methods=['GET', 'POST'])
-def register():
+def register() -> str:
     form = RegisterForm()
 
     if form.validate_on_submit():
         users_db = Database()
-        user_ID = users_db.sign_in(form.username.data, form.password.data)
+        user_ID: int = users_db.sign_in(form.username.data, form.password.data)
 
         if user_ID == -1:
             users_db.add_user(form.username.data, form.password.data)
@@ -67,30 +68,38 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-@app.route('/csv_app', methods=['GET', 'POST'])
-def csv_app():
-    checkbox_sort = request.form.get('checkbox_sort')
-
+# file upload and download
+@app.route('/upload', methods=['GET', 'POST'])
+def csv_upload() -> str:
     if request.method == 'POST':
-        files = []
+        files: list[str] = []
 
         for filename in request.files.getlist('file'):
             f = filename
+            
+            if f.filename == '':
+                flash('No files selected!')
+                return redirect(request.url)
+            
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
             files.append(filename.filename)
-        
-        menu_item = request.form.get('select-menu')
 
-        if menu_item != None and len(files) > 1 and request.form['reload_btn']:
-            reader = CsvReader(files[menu_item])     
-            csv_html_table = reader.csv_to_html()
-        elif len(files) == 1:
-            reader = CsvReader(files[0])
-            csv_html_table = reader.csv_to_html()
-        else:
-            csv_html_table = '<tb><tb>'
+        return redirect('csv_app')
 
-        return render_template('csv_app.html', title='CSV App', files=files, csv_html_table=csv_html_table)
+    return render_template('upload.html')
+
+@app.route('/download/<name>', methods=['GET', 'POST'])
+def download_file(name):
+    return send_file(f'static/tmp_upload/{name}')
+
+
+# csv app
+@app.route('/csv_app', methods=['GET', 'POST'])
+def csv_app() -> str:
+
+    files: list[str] = os.listdir(app.config['UPLOAD_FOLDER'])
+    menu_item = request.form.get('select-menu')
     
-    return render_template('csv_app.html', title='CSV App')
-
+    csv_html_table='<tb></tb>'
+    return render_template('csv_app.html', title='CSV App', files=files, csv_html_table=csv_html_table)
+    

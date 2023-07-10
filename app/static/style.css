@@ -106,7 +106,7 @@ tr:nth-child(even) {
 	color: white
 }
 
-.login_form, .register_form {
+.login_form, .register_form, .upload_form {
 	margin: 0;
 	position: absolute;
 	top: 25%;

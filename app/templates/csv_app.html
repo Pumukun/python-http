@@ -1,35 +1,53 @@
 {% extends "base.html" %}
 {% block content %}
 
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" multiple>
-    <input type="submit" value="Upload" class="button">
-	<br>
-	
-	{% if files|length == 1%}
-	<label>File: {{ files[0] }}</label>
-	{% endif %}
+{% if files|length > 0 %}
+<select size="{{ files|length }}" name="select-menu" id="select-menu" multiple="multiple">
+	{% for file in files %}
+	<option value="{{ loop.index }}">{{ file }}</option>
+	{% endfor %}
+</select>
+<br>
+{% endif %}
 
-	{% if files|length > 1 %}
-	<select size="{{ files|length }}" name="select-menu" id="select-menu">
-		{% for file in files %}
-		<option value="{{ loop.index }}">{{ file }}</option>
-		{% endfor %}
-	</select>
-	<br>
-	{% endif %}
-
-	<button type="button" id="reload_btn">Reload</button>
+<button type="button" id="reload_btn">Reload</button>
 </form>
 
 <div class="input-table" style="display: inline">
 	<label>filter</label><br>
 	<input type="field"></input>
 </div>
+<div></div>
 
 <div class="table" style="display: inline">
 {{ csv_html_table|safe }}
 </div>
+
+<a href="{{ url_for('.download_file', name="test.csv") }}">Download</a>
+
+<form id="download_form" method="POST" action="{{ url_for('download_file', name="") }}"
+      enctype="multipart/form-data">
+    <button type="submit" class="btn btn-primary">Скачать файл</button>
+</form>
+
+<script>
+const select = document.getElementById("select-menu");
+const form = document.getElementById("download_form");
+   
+const defaultSelectedValue = select.options[select.selectedIndex].text;
+
+const url = "{{ url_for('download_file', name="") }}";
+const newUrl = url + defaultSelectedValue;
+
+form.action = newUrl;
+
+select.addEventListener("change", (event) => {
+	const sel_value = event.target.value;
+	const url = "{{ url_for('download_file', name="") }}";
+	const newUrl = url + select.options[select.selectedIndex].text;
+	form.action = newUrl;
+});
+</script>
 
 <pre id="preview-text"></pre>
 <div class="preview"></div>
