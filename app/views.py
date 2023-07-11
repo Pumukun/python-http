@@ -19,20 +19,17 @@ def index() -> str:
 # login and registration
 @login_manager.user_loader
 def load_user(user_id: int) -> User:
-    user = User()
-    user.id = user_id
-    return user
+    return User(user_id)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login() -> str:
     form = LoginForm()
     
     if form.validate_on_submit():
-        user = User()
-        user.id = users_db.sign_in(form.username.data, form.password.data)
-        user.username = form.username.data
+        user_id = users_db.sign_in(form.username.data, form.password.data)
+        user = User(user_id)
 
-        if user.id == -1:
+        if user_id == -1:
             flash('Login Incorrect')
         else:
             login_user(user, remember=form.remember_me.data)

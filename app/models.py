@@ -5,7 +5,6 @@ from flask import flash
 
 
 conn_path = '/home/pumukun/GitHub/python-http/app.db'
-conn = sqlite3.connect(conn_path)
 
 class Database:
     def __init__(self):
@@ -94,5 +93,17 @@ class Database:
         return None
 
 class User(UserMixin):
-    id = -1
+    def __init__(self, id: int):
+        conn = sqlite3.connect(conn_path)
+        c = conn.cursor()
+
+        self.id: int = id
+        
+        c.execute('''SELECT User_Name, User_Password FROM Users WHERE User_ID = ?''', (id, ))
+        row = c.fetchone()
+        self.username: str = row[0]
+        self.password: str = row[1]
+
+        conn.close()
+
     
