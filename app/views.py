@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, request, send_file
+from flask import render_template, flash, redirect, request, send_file, jsonify
 from app import app, login_manager
 from app.forms import LoginForm, RegisterForm
 from app.models import Database, User
@@ -6,7 +6,6 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app.csv_reader import CsvReader
 import os
-from typing import List
 
 users_db = Database()
 
@@ -98,8 +97,29 @@ def download_file(name):
 def csv_app() -> str:
 
     files: list[str] = os.listdir(app.config['UPLOAD_FOLDER'])
-    menu_item = request.form.get('select-menu')
+    return render_template('csv_app.html', title='CSV App', files=files)
+
+@app.route('/api/set_table/<uuid>', methods=['POST', 'GET'])
+def set_table(uuid):
+    content = request.get_json(silent=True)
+    reader = CsvReader(app.config['UPLOAD_FOLDER'] + '/' + content["table"])
+    csv_html = reader.csv_to_html()
+    csv_columns = reader.get_columns()
     
-    csv_html_table='<tb></tb>'
-    return render_template('csv_app.html', title='CSV App', files=files, csv_html_table=csv_html_table)
-    
+    result_dict: dict = {
+        "csv_table": csv_html,
+        "columns": csv_columns 
+    }
+    return jsonify(result_dict)
+
+@app.route('/api/update_table/<uuid>', methods=['POST', 'GET'])
+def update_table(uuid):
+    content = request.get_json(silent=True)
+    reader = CsvReader(app.config['UPLOAD_FOLDER'] + '/' + content['table'])
+    csv_html = reader.sel_columns(content["sel_columns"])
+
+    result_dict: dict = {
+        "csv_table": csv_html
+    }
+
+    return jsonify(result_dict)

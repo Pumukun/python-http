@@ -2,33 +2,39 @@
 {% block content %}
 
 {% if files|length > 0 %}
-<select size="{{ files|length }}" name="select-menu" id="select-menu" multiple="multiple">
+<select size="{{ files|length }}" class="select-menu" id="select-menu" multiple="multiple">
 	{% for file in files %}
 	<option value="{{ loop.index }}">{{ file }}</option>
 	{% endfor %}
 </select>
-<br>
 {% endif %}
 
 <button type="button" id="reload_btn">Reload</button>
-</form>
+<button type="button" onclick="process(1)">btn</button>
+<button type="button" onclick="reload_table(1)">btn2</button>
 
-<div class="input-table" style="display: inline">
-	<label>filter</label><br>
+{% block table %}{% endblock %}
+
+<div class="menu_box">
+<div id="table_columns" class="table_columns"></div>
+
+<div id="main_menu" class="main_menu" style="margin-left: 10px;">
+	<label>Text Filter</label><br>
+	<input type="checkbox"></input>
+	<input type="field"></input>
+	<br><br>	
+	<label>Number Filter</label><br>
+	<input type="checkbox"></input>
 	<input type="field"></input>
 </div>
-<div></div>
-
-<div class="table" style="display: inline">
-{{ csv_html_table|safe }}
 </div>
-
-<a href="{{ url_for('.download_file', name="test.csv") }}">Download</a>
 
 <form id="download_form" method="POST" action="{{ url_for('download_file', name="") }}"
       enctype="multipart/form-data">
-    <button type="submit" class="btn btn-primary">Скачать файл</button>
+    <button type="submit" class="btn btn-primary">Download file</button>
 </form>
+
+<div id="table" class="table-container"></div>
 
 <script>
 	const select = document.getElementById("select-menu");

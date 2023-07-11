@@ -1,6 +1,6 @@
 body {
 	background-color: black;
-	font-family: Pixeled;
+	font-family: Terminus;
 	font-size: 15px;
 	color: white;
 	gap: 1rem;
@@ -47,58 +47,72 @@ input[type="checkbox"]:checked {
 	background-color: #555555;
 }
 
+.menu_box {
+	display: flex;
+	margin-top: 10px;
+}
+
+.table-container {
+	margin-top: 10px;
+	display: flex;
+	height: 100%;
+	flex-direction: row;
+	flex-wrap: wrap;
+	overflow-x: auto
+}
+
 table {
-  border-collapse: collapse;
-  width: 70%;
-  margin-top: 8px;
+	border-collapse: collapse;
+	table-layout: fixed;
 }
 
-#select-menu {
-  height: auto;
-  overflow: hidden;
-  border: 3px solid #555;
-  background: black;
-  margin-top: 8px;
+th, td {
+	border: 3px solid #555;
+	text-align: center;
+	padding: 5px;
+	vertical-align: top;
 }
 
-#select-menu option {
-  background: black;
-  color: white;
+th {
+	background-color: #000;
+	color: white;
 }
 
-#select-menu option:checked {
+tr:nth-child(even) {
+	background-color: #222;
+}
+
+.select-menu {
+	height: auto;
+	overflow: hidden;
+	border: 3px solid #555;
+	background: black;
+	margin-top: 8px;
+}
+
+.select-menu option {
+	background: black;
+	color: white;
+}
+
+.select-menu option:checked {
 	background: #555;
 	color: white;
 }
 
-th, td {
-  border: 3px solid #555;
-  text-align: center;
-  padding: 8px;
-}
-
-th {
-  background-color: #000;
-  color: white;
-}
-
-tr:nth-child(even) {
-  background-color: #222;
-}
-
 .a_head:link, .a_head:visited {
-  background-color: black;
-  color: white;
-  border: 3px solid #555;
-  padding: 5px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
+	background-color: black;
+	color: white;
+	border: 3px solid #555;
+	padding: 5px 10px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
 }
 
 .a_head:hover, .a_head:active {
-  background-color: #555;
-  color: white;
+	background-color: #555;
+	color: white;
 }
 
 .flash_errors {

@@ -14,5 +14,12 @@ class CsvReader:
     def get_csv(self):
         return self._csv_file
 
+    def get_columns(self):
+        return self._csv_file.columns.tolist()
+    
+    def sel_columns(self, columns):
+        self._csv_file = self._csv_file[columns]
+        return self._csv_file.to_html(index=False)
+
     def index_sort(self):
        self._csv_file.sort_index(ascending=False)
