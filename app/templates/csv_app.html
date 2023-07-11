@@ -31,22 +31,18 @@
 </form>
 
 <script>
-const select = document.getElementById("select-menu");
-const form = document.getElementById("download_form");
-   
-const defaultSelectedValue = select.options[select.selectedIndex].text;
+	const select = document.getElementById("select-menu");
+	const form = document.getElementById("download_form");
 
-const url = "{{ url_for('download_file', name="") }}";
-const newUrl = url + defaultSelectedValue;
+	if (select.options.length === 1) {
+		const url = "{{ url_for('download_file', name="") }}";
+		form.action = url + select.options[0].text;
+	}
 
-form.action = newUrl;
-
-select.addEventListener("change", (event) => {
-	const sel_value = event.target.value;
-	const url = "{{ url_for('download_file', name="") }}";
-	const newUrl = url + select.options[select.selectedIndex].text;
-	form.action = newUrl;
-});
+	select.addEventListener("change", (event) => {
+		const url = "{{ url_for('download_file', name="") }}";
+		form.action = url + select.options[select.selectedIndex].text;
+	});
 </script>
 
 <pre id="preview-text"></pre>
