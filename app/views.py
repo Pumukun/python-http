@@ -64,6 +64,12 @@ def register() -> str:
     return render_template('register.html', title='Register', form=form)
 
 
+# Profile
+@app.route('/profile', methods=['POST', 'GET'])
+@login_required
+def profile() -> str:
+    return render_template('profile.html', title='Profile')
+
 # file upload and download
 @app.route('/upload', methods=['GET', 'POST'])
 def csv_upload() -> str:
@@ -96,6 +102,7 @@ def csv_app() -> str:
     files: list[str] = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('csv_app.html', title='CSV App', files=files)
 
+# API
 @app.route('/api/set_table/<uuid>', methods=['POST', 'GET'])
 def set_table(uuid):
     content = request.get_json(silent=True)
@@ -120,3 +127,10 @@ def update_table(uuid):
     }
 
     return jsonify(result_dict)
+
+@app.route('/api/delete_file/<uuid>', methods=['GET', 'POST'])
+def delete_file(uuid):
+    content = request.get_json(silent=True)
+    os.remove(f'{app.config["UPLOAD_FOLDER"]}/{content["sel_table"]}')
+    
+    return {"success": 1}

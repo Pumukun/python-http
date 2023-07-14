@@ -99,3 +99,31 @@ function reload_table(index) {
 	});
 }
 
+function delete_file(index) {
+	var file_sel_menu = document.getElementById("select-menu");
+	var dict = {"index": index, "sel_table": text};
+
+	if (file_sel_menu.size > 1) {
+
+	$.ajax({
+		url: "/api/delete_file/" + index,
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify(dict),
+		success: function (data) {
+			const file_sel_menu = document.getElementById("select-menu");
+			var options = file_sel_menu.options;
+
+			for (var i = 0; i < options.length; i++) {
+				if (options[i].text === text) {
+					file_sel_menu.remove(i);
+					break;
+				}
+			}
+
+			file_sel_menu.size--;
+		},
+	});
+	}
+}
+
