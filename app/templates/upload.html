@@ -11,4 +11,20 @@
 	</form>
 </div>
 
+<script>
+window.addEventListener('unload', delete_all_files());
+    
+function delete_all_files() {
+    $.ajax({
+        url: "/api/delete_all_files/",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({"delete": true}),
+        success: function (data) {
+            alert("xd");
+        },
+    });
+}
+</script>
+
 {% endblock %}

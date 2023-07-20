@@ -9,9 +9,8 @@
 </select>
 {% endif %}
 
-<button type="button" id="reload_btn">Reload</button>
-<button type="button" onclick="process(1)">btn</button>
-<button type="button" onclick="reload_table(1)">btn2</button>
+<button type="button" onclick="show_table(1)">Show</button>
+<button type="button" onclick="reload_table(1)">Reload</button>
 <button type="button" onclick="delete_file(1)">Delete</button>
 
 {% block table %}{% endblock %}
@@ -49,7 +48,7 @@
 	select.addEventListener("change", (event) => {
 		const url = "{{ url_for('download_file', name="") }}";
 		form.action = url + select.options[select.selectedIndex].text;
-	});
+	}); 
 </script>
 
 <pre id="preview-text"></pre>

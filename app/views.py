@@ -6,6 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app.csv_reader import CsvReader
 import os
+import glob
 
 users_db = Database()
 
@@ -83,7 +84,7 @@ def csv_upload() -> str:
                 flash('No files selected!')
                 return redirect(request.url)
 
-            f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
+            f.save(f"{app.config['UPLOAD_FOLDER']}/{f.filename}")
             files.append(filename.filename)
 
         return redirect('csv_app')
@@ -134,3 +135,14 @@ def delete_file(uuid):
     os.remove(f'{app.config["UPLOAD_FOLDER"]}/{content["sel_table"]}')
 
     return {"success": 1}
+
+@app.route('/api/delete_all_files/', methods=['GET', 'POST'])
+def delete_all_files():
+    content = request.get_json(silent=True)
+
+    files = glob.glob(app.config["UPLOAD_FOLDER"] + "/*")
+    for f in files:
+        os.remove(f)
+
+    return {"success": 1}
+
