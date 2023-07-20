@@ -24,7 +24,7 @@ def load_user(user_id: int) -> User:
 @app.route('/login', methods=['GET', 'POST'])
 def login() -> str:
     form = LoginForm()
-    
+
     if form.validate_on_submit():
         user_id = users_db.sign_in(form.username.data, form.password.data)
         user = User(user_id)
@@ -78,11 +78,11 @@ def csv_upload() -> str:
 
         for filename in request.files.getlist('file'):
             f = filename
-            
+
             if f.filename == '':
                 flash('No files selected!')
                 return redirect(request.url)
-            
+
             f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
             files.append(filename.filename)
 
@@ -109,10 +109,10 @@ def set_table(uuid):
     reader = CsvReader(app.config['UPLOAD_FOLDER'] + '/' + content["table"])
     csv_html = reader.csv_to_html()
     csv_columns = reader.get_columns()
-    
+
     result_dict: dict = {
         "csv_table": csv_html,
-        "columns": csv_columns 
+        "columns": csv_columns
     }
     return jsonify(result_dict)
 
@@ -132,5 +132,5 @@ def update_table(uuid):
 def delete_file(uuid):
     content = request.get_json(silent=True)
     os.remove(f'{app.config["UPLOAD_FOLDER"]}/{content["sel_table"]}')
-    
+
     return {"success": 1}

@@ -41,7 +41,7 @@ class Database:
         )
 
         self.connection.commit()
-    
+
     def sign_in(self, username: str, password: str):
         password = hashlib.md5(password.encode()).hexdigest()
 
@@ -73,7 +73,7 @@ class Database:
         try:
             self.cursor.execute(
                 '''
-                    SELECT * 
+                    SELECT *
                     FROM Users
                     WHERE User_ID = ?
                     LIMIT 1
@@ -98,7 +98,7 @@ class User(UserMixin):
         c = conn.cursor()
 
         self.id: int = id
-        
+
         c.execute('''SELECT User_Name, User_Password FROM Users WHERE User_ID = ?''', (id, ))
         row = c.fetchone()
         self.username: str = row[0]
@@ -106,4 +106,3 @@ class User(UserMixin):
 
         conn.close()
 
-    
