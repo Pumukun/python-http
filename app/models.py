@@ -98,11 +98,14 @@ class User(UserMixin):
         c = conn.cursor()
 
         self.id: int = id
-
+        
         c.execute('''SELECT User_Name, User_Password FROM Users WHERE User_ID = ?''', (id, ))
         row = c.fetchone()
-        self.username: str = row[0]
-        self.password: str = row[1]
+        if row != None:
+            self.username: str = row[0]
+            self.password: str = row[1]
+        else:
+            flash("User does not exist!")
 
         conn.close()
 
